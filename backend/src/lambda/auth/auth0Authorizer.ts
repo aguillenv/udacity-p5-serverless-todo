@@ -9,10 +9,9 @@ import { JwtPayload } from '../../auth/JwtPayload'
 
 const logger = createLogger('auth')
 
-// TODO: Provide a URL that can be used to download a certificate that can be used
 // to verify JWT token signature.
 // To get this URL you need to go to an Auth0 page -> Show Advanced Settings -> Endpoints -> JSON Web Key Set
-const jwksUrl = '...'
+const jwksUrl = 'https://dev-uv0vevqt.eu.auth0.com/.well-known/jwks.json'
 
 export const handler = async (
   event: CustomAuthorizerEvent
@@ -57,11 +56,31 @@ export const handler = async (
 async function verifyToken(authHeader: string): Promise<JwtPayload> {
   const token = getToken(authHeader)
   const jwt: Jwt = decode(token, { complete: true }) as Jwt
+  let jwks;
+  try {
+    jwksRes = await Axios.get(jwksUrl);
+    jwks = jwksRes.keys
+      .filter(key => key.use === 'sig' // JWK property `use` determines the JWK is for signature verification
+                && key.kty === 'RSA' // We are only supporting RSA (RS256)
+                && key.kid           // The `kid` must be present to be useful for later
+                && ((key.x5c && key.x5c.length) || (key.n && key.e)) // Has useful public keys
+    ).map(key => {
+      return { kid: key.kid, nbf: key.nbf, publicKey: certToPEM(key.x5c[0]) };
+    });
+  } catch {
+    throw new Error('Error getting JWKS')
+  }
+  const kid = jwt.kid;
+  const signingKey = jwks.find((k) => { k.kid === kid })
+  if (!signingKey)
+    throw new Error(`Unable to find a signing key that matches '${kid}'`);
+  return verify(token, signingKey.publicKey, { algorithms: ['RS256'] }) as JwtPayload
+}
 
-  // TODO: Implement token verification
-  // You should implement it similarly to how it was implemented for the exercise for the lesson 5
-  // You can read more about how to do this here: https://auth0.com/blog/navigating-rs256-and-jwks/
-  return undefined
+function certToPEM(cert) {
+  cert = cert.match(/.{1,64}/g).join('\n');
+  cert = `-----BEGIN CERTIFICATE-----\n${cert}\n-----END CERTIFICATE-----\n`;
+  return cert;
 }
 
 function getToken(authHeader: string): string {
