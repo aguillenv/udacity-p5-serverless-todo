@@ -30,6 +30,17 @@ export class TodosAccess {
     })
     return items as TodoItem[]
   }
+
+  async createTodoItem(todoItem: TodoItem): Promise<TodoItem> {
+    await this.docClient.put({
+      TableName: this.todosTable,
+      Item: todoItem
+    }).promise()
+    logger.info('TODO item created', {
+      todoItem,
+    })
+    return todoItem
+  }
 }
 
 function createDynamoDBClient() {

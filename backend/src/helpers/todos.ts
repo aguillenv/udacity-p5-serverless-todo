@@ -9,6 +9,19 @@ import * as createError from 'http-errors'
 
 const todosAccess = new TodosAccess()
 
- export async function getTodosForUser(userId: string): Promise<TodoItem[]> {
-    return await todosAccess.getTodosForUser(userId)
+export async function getTodosForUser(userId: string): Promise<TodoItem[]> {
+  return await todosAccess.getTodosForUser(userId)
+}
+
+export async function createTodo(userId: string, newTodo: CreateTodoRequest): Promise<TodoItem> {
+  const todoItem: TodoItem = {
+    todoId: null,
+    userId,
+    createdAt: new Date().toISOString(),
+    name: newTodo.name,
+    dueDate: newTodo.dueDate,
+    done: newTodo.done,
+    attachmentUrl: newTodo.attachmentUrl
+  }
+  return await todosAccess.createTodoItem(todoItem);
 }
