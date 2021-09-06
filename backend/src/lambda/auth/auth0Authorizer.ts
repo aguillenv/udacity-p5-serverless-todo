@@ -58,8 +58,8 @@ async function verifyToken(authHeader: string): Promise<JwtPayload> {
   const jwt: Jwt = decode(token, { complete: true }) as Jwt
   let jwks;
   try {
-    jwksRes = await Axios.get(jwksUrl);
-    jwks = jwksRes.keys
+    const jwksRes = await Axios.get(jwksUrl);
+    jwks = jwksRes.data.keys
       .filter(key => key.use === 'sig' // JWK property `use` determines the JWK is for signature verification
                 && key.kty === 'RSA' // We are only supporting RSA (RS256)
                 && key.kid           // The `kid` must be present to be useful for later
@@ -70,7 +70,7 @@ async function verifyToken(authHeader: string): Promise<JwtPayload> {
   } catch {
     throw new Error('Error getting JWKS')
   }
-  const kid = jwt.kid;
+  const kid = jwt.header.kid;
   const signingKey = jwks.find((k) => { k.kid === kid })
   if (!signingKey)
     throw new Error(`Unable to find a signing key that matches '${kid}'`);
