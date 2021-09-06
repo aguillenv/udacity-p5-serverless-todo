@@ -3,11 +3,10 @@ import { AttachmentUtils } from './attachmentUtils';
 import { TodoItem } from '../models/TodoItem'
 import { CreateTodoRequest } from '../requests/CreateTodoRequest'
 import { UpdateTodoRequest } from '../requests/UpdateTodoRequest'
-import { createLogger } from '../utils/logger'
 import * as uuid from 'uuid'
-import * as createError from 'http-errors'
 
 const todosAccess = new TodosAccess()
+const attachmentUtils = new AttachmentUtils()
 
 export async function getTodosForUser(userId: string): Promise<TodoItem[]> {
   return await todosAccess.getTodosForUser(userId)
@@ -33,4 +32,8 @@ export async function updateTodo(userId: string, todoId: string, updatedTodo: Up
 
 export async function deleteTodo(userId: string, todoId: string) {
   await todosAccess.deleteTodoItem(userId, todoId);
+}
+
+export async function createAttachmentPresignedUrl(todoId: string): Promise<string> {
+  return await attachmentUtils.getGetSignedUrl(todoId);
 }
