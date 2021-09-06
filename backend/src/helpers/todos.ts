@@ -8,3 +8,7 @@ import * as uuid from 'uuid'
 import * as createError from 'http-errors'
 
 // TODO: Implement businessLogic
+
+ export async function getTodosForUser(userId: string): Promise<TodoItem[]> {
+    return await TodosAccess.getTodosForUser(userId)
+}

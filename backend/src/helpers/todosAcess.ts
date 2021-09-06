@@ -10,3 +10,15 @@ const XAWS = AWSXRay.captureAWS(AWS)
 const logger = createLogger('TodosAccess')
 
 // TODO: Implement the dataLayer logic
+export async function getTodosForUser(userId: string): Promise<TodoItem[]> {
+    const result = await DocumentClient.query({
+        TableName: 'TodosTable',
+        KeyConditionExpression: 'userId = :userId',
+        ExpressionAttributeValues: {
+            ':userId': userId
+        },
+    }).promise()
+
+    const items = result.Items
+    return items as TodoItem[]
+}
