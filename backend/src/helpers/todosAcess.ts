@@ -11,6 +11,7 @@ const logger = createLogger('TodosAccess')
 
 // TODO: Implement the dataLayer logic
 export async function getTodosForUser(userId: string): Promise<TodoItem[]> {
+    // TODO: Review syntax
     const result = await DocumentClient.query({
         TableName: 'TodosTable',
         KeyConditionExpression: 'userId = :userId',
