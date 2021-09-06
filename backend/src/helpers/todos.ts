@@ -20,8 +20,8 @@ export async function createTodo(userId: string, newTodo: CreateTodoRequest): Pr
     createdAt: new Date().toISOString(),
     name: newTodo.name,
     dueDate: newTodo.dueDate,
-    done: newTodo.done,
-    attachmentUrl: newTodo.attachmentUrl
+    done: false,
+    attachmentUrl: null
   }
   return await todosAccess.createTodoItem(todoItem);
 }
