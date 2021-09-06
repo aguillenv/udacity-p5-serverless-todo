@@ -30,3 +30,7 @@ export async function createTodo(userId: string, newTodo: CreateTodoRequest): Pr
 export async function updateTodo(userId: string, todoId: string, updatedTodo: UpdateTodoRequest) {
   await todosAccess.updateTodoItem(userId, todoId, updatedTodo);
 }
+
+export async function deleteTodo(userId: string, todoId: string) {
+  await todosAccess.deleteTodoItem(userId, todoId);
+}
