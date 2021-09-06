@@ -7,8 +7,8 @@ import { createLogger } from '../utils/logger'
 import * as uuid from 'uuid'
 import * as createError from 'http-errors'
 
-// TODO: Implement businessLogic
+const todosAccess = new TodosAccess()
 
  export async function getTodosForUser(userId: string): Promise<TodoItem[]> {
-    return await TodosAccess.getTodosForUser(userId)
+    return await todosAccess.getTodosForUser(userId)
 }
