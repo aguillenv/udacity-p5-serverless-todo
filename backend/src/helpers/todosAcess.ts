@@ -20,5 +20,8 @@ export async function getTodosForUser(userId: string): Promise<TodoItem[]> {
     }).promise()
 
     const items = result.Items
+    logger.info('Getting TODOS for user', {
+        userId
+    })
     return items as TodoItem[]
 }
