@@ -109,7 +109,6 @@ resources:
         RestApiId:
           Ref: ApiGatewayRestApi
 
-    # TODO: Create a DynamoDB table with local secondary index and a composite key
     TodosTable:
       Type: AWS::DynamoDB::Table
       Properties:
@@ -136,6 +135,7 @@ resources:
               KeyType: RANGE
           Projection:
             ProjectionType: ALL # What attributes will be copied to an index
+
     # Do not forget to add the CorsConfiguration propoerty
     AttachmentsBucket:
       Type: AWS::S3::Bucket
