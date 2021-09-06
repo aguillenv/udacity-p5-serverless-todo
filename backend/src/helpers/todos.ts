@@ -14,8 +14,9 @@ export async function getTodosForUser(userId: string): Promise<TodoItem[]> {
 }
 
 export async function createTodo(userId: string, newTodo: CreateTodoRequest): Promise<TodoItem> {
+  const itemId = uuid.v4()
   const todoItem: TodoItem = {
-    todoId: null,
+    todoId: itemId,
     userId,
     createdAt: new Date().toISOString(),
     name: newTodo.name,
@@ -24,4 +25,8 @@ export async function createTodo(userId: string, newTodo: CreateTodoRequest): Pr
     attachmentUrl: null
   }
   return await todosAccess.createTodoItem(todoItem);
+}
+
+export async function updateTodo(userId: string, todoId: string, updatedTodo: UpdateTodoRequest) {
+  await todosAccess.updateTodoItem(userId, todoId, updatedTodo);
 }
