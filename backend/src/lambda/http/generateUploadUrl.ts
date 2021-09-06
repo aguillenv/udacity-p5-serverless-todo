@@ -10,7 +10,19 @@ import { getUserId } from '../utils'
 export const handler = middy(
   async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
     const todoId = event.pathParameters.todoId
-    return await createAttachmentPresignedUrl(todoId);
+    const userId = getUserId(event);
+    if (!userId) {
+      return {
+        statusCode: 404,
+        body: JSON.stringify('User not found')
+      }
+    }
+    return {
+      statusCode: 200,
+      body: JSON.stringify({
+        uploadUrl: await createAttachmentPresignedUrl(todoId)
+      })
+    }
   }
 )
 
